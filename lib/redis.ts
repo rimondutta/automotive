@@ -13,7 +13,8 @@ declare global {
   var redisCache: RedisCache | undefined;
 }
 
-const cached: RedisCache = global.redisCache ?? { conn: null, disabled: false };
+// If no REDIS_URL is configured, permanently disable at module load time — no repeated warnings.
+const cached: RedisCache = global.redisCache ?? { conn: null, disabled: !REDIS_URL };
 
 if (!global.redisCache) {
   global.redisCache = cached;
@@ -25,11 +26,6 @@ if (!global.redisCache) {
  */
 export function getRedisClient(): Redis | null {
   if (cached.disabled) {
-    return null;
-  }
-
-  if (!REDIS_URL) {
-    logger.warn('[Redis] REDIS_URL is not defined. Caching disabled.');
     return null;
   }
 
