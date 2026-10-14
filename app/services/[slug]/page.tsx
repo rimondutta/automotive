@@ -1,0 +1,157 @@
+import PageHeroBanner from "../../../components/services/PageHeroBanner";
+import ServiceDetails from "../../../components/services/ServiceDetails";
+import ServiceSidebar from "../../../components/services/ServiceSidebar";
+import ServiceCTABanner from "../../../components/services/ServiceCTABanner";
+import { notFound } from "next/navigation";
+import { Metadata } from "next";
+import { ServiceService } from "@/services/serviceService";
+import { connectDB } from "@/lib/mongodb";
+import Service from "@/models/Service";
+
+interface Props {
+  params: { slug: string };
+}
+
+export const revalidate = 3600; // revalidate at most every hour
+
+export async function generateStaticParams() {
+  await connectDB();
+  const services = await Service.find({ isActive: true }).select("slug").lean();
+  return services.map((s) => ({
+    slug: s.slug,
+  }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const { service } = await ServiceService.getServiceBySlug(slug);
+  
+  if (!service) {
+    return {
+      title: "Service Not Found | Poly's Auto Repair LLC",
+    };
+  }
+
+  return {
+    title: `${service.title} | Poly's Auto Repair LLC`,
+    description: service.shortDescription,
+  };
+}
+
+export default async function DynamicServicePage({ params }: Props) {
+  const { slug } = await params;
+  const { service } = await ServiceService.getServiceBySlug(slug);
+
+  if (!service) {
+    notFound();
+  }
+
+  // Serialize MongoDB document
+  const serializedService = JSON.parse(JSON.stringify(service));
+
+  return (
+    <div className="bg-[#0E0E0E] min-h-screen font-sans text-white">
+      {/* 1. Page Hero */}
+      <PageHeroBanner 
+        title={serializedService.title} 
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Services", href: "/services" },
+          { label: serializedService.title }
+        ]} 
+      />
+
+      {/* 2. Main Content Area */}
+      <main className="container mx-auto px-4 py-16 lg:py-24 max-w-7xl">
+        <div className="flex flex-col lg:flex-row gap-12 xl:gap-20">
+          
+          {/* Left Column Component Layer */}
+          <ServiceDetails service={serializedService} />
+
+          {/* Right Column Component Layer */}
+          <ServiceSidebar currentSlug={slug} serviceTitle={serializedService.title} />
+
+        </div>
+      </main>
+
+      {/* 3. CTA Banner */}
+      <ServiceCTABanner />
+
+      {/* Structured Data (Schema.org) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": serializedService.title,
+            "description": serializedService.shortDescription || serializedService.description,
+            "provider": {
+              "@type": "AutoRepair",
+              "name": "Poly's Auto Repair LLC",
+              "url": "https://polysautorepair.com",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "1636 N 43rd Ave #9",
+                "addressLocality": "Phoenix",
+                "addressRegion": "AZ",
+                "postalCode": "85009",
+                "addressCountry": "US"
+              }
+            },
+            "areaServed": "Phoenix, AZ",
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Automotive Repair Services",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": serializedService.title
+                  }
+                }
+              ]
+            }
+          })
+        }}
+      />
+
+      {/* FAQ Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": (serializedService.faqs && serializedService.faqs.length > 0 ? serializedService.faqs : [
+              {
+                question: "How long does a standard vehicle repair take?",
+                answer: "The duration depends on the complexity of the issue. Routine maintenance typically takes 2-4 hours, while complex engine or transmission work might require 2-3 business days."
+              },
+              {
+                question: "Do you use genuine parts for all repairs?",
+                answer: "Yes, we prioritize the use of 100% genuine OEM (Original Equipment Manufacturer) parts for all vehicle services."
+              },
+              {
+                question: "Can I get a price estimate over the phone?",
+                answer: "We can provide general estimates, but a precise quote requires a physical diagnostic of your vehicle."
+              },
+              {
+                question: "Is there a warranty on your repair services?",
+                answer: "We stand behind our work with a comprehensive service warranty on both parts and labor."
+              }
+            ]).map((faq: any) => ({
+              "@type": "Question",
+              "name": faq.question,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": faq.answer
+              }
+            }))
+          })
+        }}
+      />
+    </div>
+  );
+}

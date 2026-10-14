@@ -1,0 +1,80 @@
+[
+  {
+    "id": "1",
+    "title": "Tyre Change",
+    "slug": "tyre-change",
+    "category": "tires-wheels",
+    "shortDescription": "Rapid mobile tyre change service for all vehicle models, ensuring you're back on the road in no time.",
+    "description": "Our mobile units are equipped with state-of-the-art machines to perform precise and quick tyre changes anywhere you are stranded. Over 121 successful tyre changes this month alone.",
+    "icon": "Circle",
+    "isActive": true,
+    "duration": "45 Min",
+    "price": "From £80",
+    "image": "/assets/asset 13.jpeg"
+  },
+  {
+    "id": "2",
+    "title": "Flat Tyre Repair",
+    "slug": "flat-tyre-repair",
+    "category": "tires-wheels",
+    "shortDescription": "Don't let a puncture ruin your day. We offer quick patching and repair for flat tyres.",
+    "description": "We specialize in on-site puncture repairs. If your tyre is salvageable, we will patch it up to BSA standards. Over 27 flat tyres repaired safely.",
+    "icon": "Settings",
+    "isActive": true,
+    "duration": "30 Min",
+    "price": "From £45",
+    "image": "/assets/asset 12.jpeg"
+  },
+  {
+    "id": "3",
+    "title": "Locking Nut Removal",
+    "slug": "locking-nut-removal",
+    "category": "tires-wheels",
+    "shortDescription": "Lost your locking wheel nut key? We can safely remove locking nuts without damaging your alloys.",
+    "description": "Our technicians use specialized tools to crack and remove stripped or lost locking wheel nuts. 14+ successful removals without a single scratch on the alloys.",
+    "icon": "Wrench",
+    "isActive": true,
+    "duration": "1 Hour",
+    "price": "From £65",
+    "image": "/assets/asset 14.jpeg"
+  },
+  {
+    "id": "4",
+    "title": "Blowout Repair & Recovery",
+    "slug": "blowout-repair",
+    "category": "tires-wheels",
+    "shortDescription": "Emergency assistance for severe tyre blowouts. We bring the replacement to you.",
+    "description": "A blowout can be terrifying. We provide immediate roadside assistance, bringing the correct tyre size to your location to get you moving again quickly.",
+    "icon": "AlertTriangle",
+    "isActive": true,
+    "duration": "1 Hour",
+    "price": "From £90",
+    "image": "/assets/asset 15.jpeg"
+  },
+  {
+    "id": "5",
+    "title": "Alloy Repair",
+    "slug": "alloy-repair",
+    "category": "body-denting",
+    "shortDescription": "Mobile alloy wheel refurbishment and scuff repair.",
+    "description": "Curbed your wheels? We offer mobile alloy repair to fix scuffs, scratches, and restore the pristine look of your wheels.",
+    "icon": "Disc",
+    "isActive": true,
+    "duration": "2 Hours",
+    "price": "From £75",
+    "image": "/assets/asset 66.jpeg"
+  },
+  {
+    "id": "6",
+    "title": "Front Tyre Replacement",
+    "slug": "front-tyre-replacement",
+    "category": "tires-wheels",
+    "shortDescription": "Specialized replacement and balancing for front-wheel steering tyres.",
+    "description": "Front tyres wear out faster. We provide premium replacements with computerized balancing to ensure no steering vibration.",
+    "icon": "Car",
+    "isActive": true,
+    "duration": "45 Min",
+    "price": "From £80",
+    "image": "/assets/asset 38.jpeg"
+  }
+]

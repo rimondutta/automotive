@@ -1,0 +1,24 @@
+# Poly's Auto Repair LLC
+
+Poly's Auto Repair LLC is a professional vehicle service center located in Phoenix, Arizona, specializing in high-quality automotive maintenance and repair.
+
+## Core Services
+- Engine Repair & Diagnostics
+- Tire Change & Computerized Balancing
+- Car Denting & Body Repair
+- Battery Testing & Replacement
+- Brake Servicing & Disc Blade Changing
+- Windshield Replacement
+
+## Key Pages
+- /: Home page with service overview and company values.
+- /services: Full list of specialized auto repair services.
+- /contact: Booking and location information.
+
+## Technology Stack
+- Built with: Next.js (App Router)
+- Data Source: Local JSON architecture for service records.
+- Styling: Modern responsive UI.
+
+## Business Philosophy
+Factory trained mechanics, genuine parts usage, and computer-aided diagnostics ensuring 100% genuine servicing protocols for all vehicle platforms.

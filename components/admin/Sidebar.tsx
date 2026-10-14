@@ -1,0 +1,139 @@
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { signOut } from 'next-auth/react';
+import { useState } from 'react';
+import { X, LayoutDashboard, Calendar, FileText, Settings, LogOut, Zap, ChevronRight, Globe, RefreshCw, HelpCircle } from 'lucide-react';
+
+const navItems = [
+  {
+    label: 'Dashboard',
+    href: '/admin/dashboard',
+    icon: <LayoutDashboard size={20} />,
+  },
+  {
+    label: 'Work Orders',
+    href: '/admin/bookings',
+    icon: <Calendar size={20} />,
+  },
+  {
+    label: 'Posts',
+    href: '/admin/posts',
+    icon: <FileText size={20} />,
+  },
+  {
+    label: 'Services',
+    href: '/admin/services',
+    icon: <Settings size={20} />,
+  },
+  {
+    label: 'Help & Manual',
+    href: '/admin/help',
+    icon: <HelpCircle size={20} />,
+  },
+];
+
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+// [x] Create Context or State for Sidebar Toggle in `AdminLayout` <!-- id: 0 -->
+// [/] Refactor `Sidebar.tsx` for responsiveness and modern dark theme <!-- id: 1 -->
+
+export default function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const pathname = usePathname();
+  const [isUpdatingSitemap, setIsUpdatingSitemap] = useState(false);
+
+  const handleUpdateSitemap = async () => {
+    try {
+      setIsUpdatingSitemap(true);
+      const res = await fetch('/api/admin/sitemap', { method: 'POST' });
+      const data = await res.json();
+      if (res.ok) alert('Sitemap updated successfully! Google will receive the latest data.');
+      else alert('Failed to update sitemap: ' + data.error);
+    } catch (err) {
+      alert('Failed to connect to server.');
+    } finally {
+      setIsUpdatingSitemap(false);
+    }
+  };
+
+  return (
+    <aside className={`
+      fixed inset-y-0 left-0 bg-[#0F172A] text-slate-300 w-64 z-50 transform transition-transform duration-300 ease-in-out lg:translate-x-0
+      ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+    `}>
+      {/* Header / Logo */}
+      <div className="h-20 flex items-center justify-between px-6 border-b border-slate-800">
+        <Link href="/admin/dashboard" className="flex items-center gap-3 group">
+          <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-700 rounded-xl flex items-center justify-center shadow-lg shadow-red-600/20 group-hover:scale-105 transition-transform">
+            <Zap size={22} className="text-white fill-white" />
+          </div>
+          <div>
+            <h1 className="text-lg font-bold text-white tracking-tight leading-none">Poly's Auto Repair</h1>
+            <p className="text-[10px] uppercase font-black tracking-widest text-slate-500 mt-1">Admin Dashboard</p>
+          </div>
+        </Link>
+        <button
+          onClick={onClose}
+          className="lg:hidden p-2 hover:bg-slate-800 rounded-lg text-slate-400"
+        >
+          <X size={20} />
+        </button>
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex-1 py-8 px-4 space-y-2 overflow-y-auto">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={onClose}
+              className={`
+                flex items-center justify-between group px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200
+                ${isActive
+                  ? 'bg-[#FFF0F0] text-[#D70006] border-l-4 border-[#D70006] rounded-r-xl rounded-l-none'
+                  : 'hover:bg-slate-800/50 hover:text-white border-l-4 border-transparent'}
+              `}
+            >
+              <div className="flex items-center gap-3.5">
+                <span className={`transition-colors ${isActive ? 'text-[#D70006]' : 'group-hover:text-[#D70006]'}`}>
+                  {item.icon}
+                </span>
+                {item.label}
+              </div>
+              {isActive && <ChevronRight size={14} className="text-[#D70006]" />}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* Bottom Profile / Logout */}
+      <div className="p-4 bg-slate-900/50 border-t border-slate-800 space-y-2">
+        <button
+          onClick={handleUpdateSitemap}
+          disabled={isUpdatingSitemap}
+          className="flex items-center gap-3 w-full px-4 py-3.5 rounded-xl text-sm font-semibold text-slate-400 hover:bg-slate-800 hover:text-white disabled:opacity-50 transition-all duration-300 group"
+        >
+          {isUpdatingSitemap ? (
+            <RefreshCw size={20} className="animate-spin text-blue-400" />
+          ) : (
+            <Globe size={20} className="group-hover:text-blue-400 transition-colors" />
+          )}
+          Update Sitemap
+        </button>
+        <button
+          onClick={() => signOut({ callbackUrl: '/admin/login' })}
+          className="flex items-center gap-3 w-full px-4 py-3.5 rounded-xl text-sm font-semibold text-slate-400 hover:bg-[#D70006] hover:text-white transition-all duration-300 group"
+        >
+          <LogOut size={20} className="group-hover:rotate-12 transition-transform" />
+          Logout Session
+        </button>
+      </div>
+    </aside>
+  );
+}
